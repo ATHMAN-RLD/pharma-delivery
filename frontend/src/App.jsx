@@ -9,6 +9,14 @@ function App() {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [successNotice, setSuccessNotice] = useState('');
 
+  // Stock imagery fallback mapping for realistic medical items
+  const fallbackImages = [
+    'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=600&q=80',
+    'https://images.unsplash.com/photo-1576602976047-174e57a47881?auto=format&fit=crop&w=600&q=80',
+    'https://images.unsplash.com/photo-1471864190281-a93a3070b6de?auto=format&fit=crop&w=600&q=80',
+    'https://images.unsplash.com/photo-1585435557343-3b092031a831?auto=format&fit=crop&w=600&q=80',
+  ];
+
   useEffect(() => {
     fetch('http://localhost/pharma-api/get_products.php')
       .then((res) => res.json())
@@ -33,69 +41,89 @@ function App() {
 
   return (
     <div style={styles.container}>
-      {/* Header / Navbar */}
+      {/* Dynamic Navbar */}
       <header style={styles.navbar}>
         <div style={styles.navBrand}>
-          <span style={styles.logoIcon}>💊</span>
+          <div style={styles.logoBadge}>
+            <span style={styles.logoIcon}>✚</span>
+          </div>
           <div>
             <h1 style={styles.brandTitle}>PharmaExpress</h1>
-            <p style={styles.brandSubtitle}>Mombasa Healthcare Delivery</p>
+            <p style={styles.brandSubtitle}>Mombasa 24/7 Rapid Healthcare</p>
           </div>
         </div>
         <div style={styles.cartBadge}>
-          🛒 Orders <span style={styles.cartCount}>{cartCount}</span>
+          <span style={{ fontSize: '16px' }}>🛒</span>
+          <span>Orders</span>
+          <span style={styles.cartCount}>{cartCount}</span>
         </div>
       </header>
 
-      {/* Hero Section */}
+      {/* Hero Section with Pattern Overlay */}
       <section style={styles.hero}>
-        <h2>Fast Prescription & Medical Delivery in Mombasa</h2>
-        <p>Order healthcare products from verified pharmacies with M-Pesa & Card payment options.</p>
+        <div style={styles.heroContent}>
+          <span style={styles.heroTag}>🚀 Express Delivery in 30 Mins</span>
+          <h2 style={styles.heroTitle}>Quality Medicines & Supplies Delivered across Mombasa</h2>
+          <p style={styles.heroSub}>
+            Order genuine pharmaceuticals, vitamins, and healthcare essentials right to your doorstep with instant M-Pesa verification.
+          </p>
+        </div>
       </section>
 
-      {/* Main Content */}
+      {/* Main Content Body */}
       <main style={styles.main}>
         {successNotice && (
           <div style={styles.alert}>
-            ✅ {successNotice}
+            🎉 {successNotice}
           </div>
         )}
 
-        <h3 style={styles.sectionTitle}>Featured Medicines & Supplies</h3>
+        <div style={styles.sectionHeader}>
+          <div>
+            <h3 style={styles.sectionTitle}>Featured Medicines & Medical Supplies</h3>
+            <p style={styles.sectionSubtitle}>Verified items in stock at our central Mombasa pharmacy hub</p>
+          </div>
+        </div>
 
         {loading ? (
-          <p style={styles.loadingText}>Loading products...</p>
+          <div style={styles.loadingBox}>
+            <div style={styles.spinner}></div>
+            <p style={styles.loadingText}>Loading healthcare inventory...</p>
+          </div>
         ) : (
           <div style={styles.grid}>
-            {products.map((item) => (
-              <div key={item.id} style={styles.card}>
-                <div style={styles.imageContainer}>
-                  <img
-                    src={item.image_url || 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500'}
-                    alt={item.name}
-                    style={styles.image}
-                  />
-                </div>
-                <div style={styles.cardBody}>
-                  <h4 style={styles.productName}>{item.name}</h4>
-                  <p style={styles.productDesc}>{item.description}</p>
-                  <div style={styles.priceRow}>
-                    <span style={styles.price}>KES {Number(item.price).toLocaleString()}</span>
-                    <span style={styles.stock}>In Stock ({item.stock_quantity})</span>
+            {products.map((item, idx) => {
+              const imgUrl = item.image_url || fallbackImages[idx % fallbackImages.length];
+              return (
+                <div key={item.id} style={styles.card}>
+                  <div style={styles.imageContainer}>
+                    <img src={imgUrl} alt={item.name} style={styles.image} />
+                    <span style={styles.rxBadge}>Verified Stock</span>
                   </div>
-                  <button
-                    onClick={() => setSelectedProduct(item)}
-                    style={styles.addButton}
-                  >
-                    Add to Order
-                  </button>
+                  <div style={styles.cardBody}>
+                    <h4 style={styles.productName}>{item.name}</h4>
+                    <p style={styles.productDesc}>{item.description}</p>
+                    <div style={styles.priceRow}>
+                      <div>
+                        <span style={styles.priceLabel}>Price</span>
+                        <div style={styles.price}>KES {Number(item.price).toLocaleString()}</div>
+                      </div>
+                      <span style={styles.stock}>● {item.stock_quantity} available</span>
+                    </div>
+                    <button
+                      onClick={() => setSelectedProduct(item)}
+                      style={styles.addButton}
+                    >
+                      Add to Order
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
 
-        {/* Live Delivery Map */}
+        {/* Live Delivery Tracking Map */}
         <DeliveryMap />
       </main>
 
@@ -113,110 +141,185 @@ function App() {
 
 const styles = {
   container: {
-    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
-    backgroundColor: '#f4f7f6',
+    fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+    backgroundColor: '#f1f5f9',
+    backgroundImage: `radial-gradient(#cbd5e1 1px, transparent 1px)`,
+    backgroundSize: '24px 24px',
     minHeight: '100vh',
     margin: 0,
-    paddingBottom: '40px',
+    paddingBottom: '50px',
   },
   navbar: {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: '15px 40px',
-    backgroundColor: '#0284c7',
+    padding: '16px 48px',
+    backgroundColor: '#0f172a',
     color: '#ffffff',
-    boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+    boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
+    borderBottom: '3px solid #0284c7',
   },
-  navBrand: { display: 'flex', alignItems: 'center', gap: '12px' },
-  logoIcon: { fontSize: '32px' },
-  brandTitle: { margin: 0, fontSize: '22px', fontWeight: '700' },
-  brandSubtitle: { margin: 0, fontSize: '12px', opacity: 0.85 },
+  navBrand: { display: 'flex', alignItems: 'center', gap: '14px' },
+  logoBadge: {
+    width: '44px',
+    height: '44px',
+    borderRadius: '12px',
+    background: 'linear-gradient(135deg, #0284c7 0%, #10b981 100%)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    boxShadow: '0 4px 12px rgba(2, 132, 199, 0.4)',
+  },
+  logoIcon: { fontSize: '24px', color: '#ffffff', fontWeight: 'bold' },
+  brandTitle: { margin: 0, fontSize: '22px', fontWeight: '800', letterSpacing: '-0.5px' },
+  brandSubtitle: { margin: 0, fontSize: '12px', color: '#94a3b8', fontWeight: '500' },
   cartBadge: {
-    backgroundColor: '#ffffff',
-    color: '#0284c7',
-    padding: '8px 16px',
-    borderRadius: '20px',
-    fontWeight: 'bold',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+    backgroundColor: '#1e293b',
+    color: '#ffffff',
+    padding: '8px 18px',
+    borderRadius: '30px',
+    fontWeight: '600',
     fontSize: '14px',
+    border: '1px solid #334155',
   },
   cartCount: {
-    backgroundColor: '#ef4444',
+    backgroundColor: '#10b981',
     color: '#fff',
     borderRadius: '50%',
     padding: '2px 8px',
-    marginLeft: '6px',
     fontSize: '12px',
+    fontWeight: 'bold',
   },
   hero: {
-    backgroundColor: '#0ea5e9',
+    background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 50%, #0f172a 100%)',
     color: '#ffffff',
+    padding: '60px 20px',
     textAlign: 'center',
-    padding: '40px 20px',
+    boxShadow: 'inset 0 -10px 20px rgba(0,0,0,0.1)',
+  },
+  heroContent: { maxWidth: '750px', margin: '0 auto' },
+  heroTag: {
+    backgroundColor: 'rgba(255,255,255,0.15)',
+    color: '#38bdf8',
+    padding: '6px 14px',
+    borderRadius: '20px',
+    fontSize: '13px',
+    fontWeight: '700',
+    display: 'inline-block',
+    marginBottom: '16px',
+    backdropFilter: 'blur(4px)',
+  },
+  heroTitle: {
+    fontSize: '32px',
+    fontWeight: '800',
+    margin: '0 0 12px 0',
+    lineHeight: '1.2',
+  },
+  heroSub: {
+    fontSize: '16px',
+    color: '#e0f2fe',
+    margin: 0,
+    lineHeight: '1.5',
+    opacity: 0.9,
   },
   main: {
-    maxWidth: '1100px',
-    margin: '30px auto',
+    maxWidth: '1140px',
+    margin: '40px auto 0 auto',
     padding: '0 20px',
   },
   alert: {
     backgroundColor: '#dcfce7',
     color: '#15803d',
     border: '1px solid #86efac',
-    padding: '12px 20px',
-    borderRadius: '8px',
-    marginBottom: '20px',
-    fontWeight: 'bold',
+    padding: '14px 20px',
+    borderRadius: '10px',
+    marginBottom: '24px',
+    fontWeight: '600',
+    boxShadow: '0 4px 12px rgba(22, 163, 74, 0.1)',
   },
-  sectionTitle: { color: '#1e293b', fontSize: '20px', marginBottom: '20px' },
-  loadingText: { textAlign: 'center', color: '#64748b' },
+  sectionHeader: { marginBottom: '24px' },
+  sectionTitle: { color: '#0f172a', fontSize: '22px', fontWeight: '700', margin: '0 0 4px 0' },
+  sectionSubtitle: { color: '#64748b', fontSize: '14px', margin: 0 },
+  loadingBox: { textAlign: 'center', padding: '40px 0' },
+  loadingText: { color: '#64748b', fontWeight: '500' },
   grid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(270px, 1fr))',
     gap: '24px',
   },
   card: {
     backgroundColor: '#ffffff',
-    borderRadius: '12px',
+    borderRadius: '16px',
     overflow: 'hidden',
-    boxShadow: '0 4px 15px rgba(0,0,0,0.05)',
+    boxShadow: '0 10px 25px -5px rgba(0,0,0,0.05), 0 8px 10px -6px rgba(0,0,0,0.01)',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
+    border: '1px solid #e2e8f0',
+    transition: 'transform 0.2s ease, box-shadow 0.2s ease',
   },
-  imageContainer: { height: '180px', overflow: 'hidden' },
-  image: { width: '100%', height: '100%', objectFit: 'cover' },
+  imageContainer: {
+    height: '190px',
+    overflow: 'hidden',
+    position: 'relative',
+  },
+  image: {
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
+  },
+  rxBadge: {
+    position: 'absolute',
+    top: '12px',
+    right: '12px',
+    backgroundColor: 'rgba(15, 23, 42, 0.75)',
+    color: '#38bdf8',
+    fontSize: '11px',
+    fontWeight: '700',
+    padding: '4px 10px',
+    borderRadius: '12px',
+    backdropFilter: 'blur(4px)',
+  },
   cardBody: {
-    padding: '16px',
+    padding: '20px',
     display: 'flex',
     flexDirection: 'column',
     flexGrow: 1,
   },
-  productName: { margin: '0 0 8px 0', fontSize: '16px', color: '#0f172a' },
+  productName: { margin: '0 0 8px 0', fontSize: '17px', fontWeight: '700', color: '#0f172a' },
   productDesc: {
     fontSize: '13px',
     color: '#64748b',
-    margin: '0 0 12px 0',
+    margin: '0 0 16px 0',
     flexGrow: 1,
+    lineHeight: '1.4',
   },
   priceRow: {
     display: 'flex',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: '12px',
+    alignItems: 'flex-end',
+    marginBottom: '16px',
+    paddingTop: '12px',
+    borderTop: '1px solid #f1f5f9',
   },
-  price: { fontSize: '16px', fontWeight: 'bold', color: '#0284c7' },
-  stock: { fontSize: '12px', color: '#16a34a' },
+  priceLabel: { fontSize: '11px', color: '#94a3b8', textTransform: 'uppercase', fontWeight: '700' },
+  price: { fontSize: '18px', fontWeight: '800', color: '#0284c7' },
+  stock: { fontSize: '12px', color: '#10b981', fontWeight: '600' },
   addButton: {
     backgroundColor: '#0284c7',
     color: '#ffffff',
     border: 'none',
-    padding: '10px',
-    borderRadius: '6px',
-    fontWeight: 'bold',
+    padding: '12px',
+    borderRadius: '10px',
+    fontWeight: '700',
+    fontSize: '14px',
     cursor: 'pointer',
     width: '100%',
+    boxShadow: '0 4px 12px rgba(2, 132, 199, 0.25)',
   },
 };
 
-export default App; 
+export default App;  
