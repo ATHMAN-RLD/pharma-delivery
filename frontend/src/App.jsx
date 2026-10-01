@@ -9,9 +9,8 @@ function App() {
   const [cartCount, setCartCount] = useState(0);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [successNotice, setSuccessNotice] = useState('');
-  const [activeTab, setActiveTab] = useState('shop'); // 'shop' or 'dashboard'
+  const [activeTab, setActiveTab] = useState('shop');
 
-  // Curated fallback image gallery for medical inventory
   const fallbackImages = [
     'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=800&q=80',
     'https://images.unsplash.com/photo-1576602976047-174e57a47881?auto=format&fit=crop&w=800&q=80',
@@ -45,7 +44,7 @@ function App() {
 
   return (
     <div style={styles.container}>
-      {/* Dynamic Full-Width Navbar */}
+      {/* Edge-to-Edge Top Header */}
       <header style={styles.navbar}>
         <div style={styles.navBrand}>
           <div style={styles.logoBadge}>
@@ -57,7 +56,6 @@ function App() {
           </div>
         </div>
 
-        {/* Tab Switcher & Order Counter */}
         <div style={styles.navActions}>
           <button
             onClick={() => setActiveTab('shop')}
@@ -79,19 +77,19 @@ function App() {
         </div>
       </header>
 
-      {/* Hero Banner with Geometric Pattern */}
+      {/* Hero Banner */}
       <section style={styles.hero}>
         <div style={styles.heroContent}>
-          <span style={styles.heroTag}>🚀 Express Delivery Across Mombasa Zone</span>
-          <h2 style={styles.heroTitle}>Quality Pharmaceuticals & Medical Supplies Delivered Fast</h2>
+          <span style={styles.heroTag}>⚡ 30-Minute Rapid Delivery</span>
+          <h2 style={styles.heroTitle}>Quality Medicines & Supplies Delivered across Mombasa</h2>
           <p style={styles.heroSub}>
-            Order genuine prescription medicines, first aid kits, and supplements verified by central Mombasa pharmacy hubs.
+            Order genuine pharmaceuticals, vitamins, and healthcare essentials directly from verified pharmacy hubs with instant M-Pesa verification.
           </p>
         </div>
       </section>
 
-      {/* Full Width Main Layout Area */}
-      <main style={styles.mainFullWidth}>
+      {/* Content Container */}
+      <main style={styles.mainContainer}>
         {successNotice && <div style={styles.alert}>🎉 {successNotice}</div>}
 
         {activeTab === 'dashboard' ? (
@@ -100,14 +98,14 @@ function App() {
           <>
             <div style={styles.sectionHeader}>
               <div>
-                <h3 style={styles.sectionTitle}>Featured Medicines & Supplies</h3>
-                <p style={styles.sectionSubtitle}>Verified items in stock for immediate dispatch</p>
+                <h3 style={styles.sectionTitle}>Featured Medicines & Medical Supplies</h3>
+                <p style={styles.sectionSubtitle}>Verified items in stock at our central Mombasa pharmacy hub</p>
               </div>
             </div>
 
             {loading ? (
               <div style={styles.loadingBox}>
-                <p style={styles.loadingText}>Loading healthcare catalog...</p>
+                <p style={styles.loadingText}>Loading healthcare inventory...</p>
               </div>
             ) : (
               <div style={styles.fullGrid}>
@@ -139,13 +137,11 @@ function App() {
               </div>
             )}
 
-            {/* Live GPS Delivery Map */}
             <DeliveryMap />
           </>
         )}
       </main>
-
-      {/* Checkout Modal */}
+      
       {selectedProduct && (
         <CheckoutModal
           product={selectedProduct}
@@ -160,22 +156,31 @@ function App() {
 const styles = {
   container: {
     fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
-    backgroundColor: '#f1f5f9',
-    backgroundImage: `radial-gradient(#cbd5e1 1.2px, transparent 1.2px), linear-gradient(180deg, #f8fafc 0%, #e2e8f0 100%)`,
-    backgroundSize: '30px 30px, 100% 100%',
+    backgroundColor: '#0f172a',
+    backgroundImage: `
+      radial-gradient(circle at 15% 15%, rgba(2, 132, 199, 0.15) 0%, transparent 40%),
+      radial-gradient(circle at 85% 85%, rgba(16, 185, 129, 0.12) 0%, transparent 40%),
+      radial-gradient(#334155 1px, transparent 1px)
+    `,
+    backgroundSize: '100% 100%, 100% 100%, 28px 28px',
     minHeight: '100vh',
+    width: '100%',
     margin: 0,
+    padding: 0,
+    boxSizing: 'border-box',
     paddingBottom: '60px',
   },
   navbar: {
+    width: '100%',
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: '16px 40px',
-    backgroundColor: '#0f172a',
+    padding: '18px 32px',
+    backgroundColor: '#0b1120',
     color: '#ffffff',
-    boxShadow: '0 4px 20px rgba(0,0,0,0.2)',
-    borderBottom: '4px solid #0284c7',
+    boxShadow: '0 4px 25px rgba(0,0,0,0.4)',
+    borderBottom: '2px solid #0284c7',
+    boxSizing: 'border-box',
     flexWrap: 'wrap',
     gap: '16px',
   },
@@ -188,14 +193,14 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    boxShadow: '0 4px 12px rgba(2, 132, 199, 0.4)',
+    boxShadow: '0 0 15px rgba(2, 132, 199, 0.5)',
   },
   logoIcon: { fontSize: '26px', color: '#ffffff', fontWeight: 'bold' },
-  brandTitle: { margin: 0, fontSize: '24px', fontWeight: '800', letterSpacing: '-0.5px' },
-  brandSubtitle: { margin: 0, fontSize: '12px', color: '#94a3b8', fontWeight: '500' },
+  brandTitle: { margin: 0, fontSize: '22px', fontWeight: '800', color: '#ffffff' },
+  brandSubtitle: { margin: 0, fontSize: '12px', color: '#38bdf8', fontWeight: '600' },
   navActions: { display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' },
   navTab: {
-    backgroundColor: 'transparent',
+    backgroundColor: 'rgba(30, 41, 59, 0.8)',
     color: '#94a3b8',
     border: '1px solid #334155',
     padding: '8px 16px',
@@ -207,7 +212,7 @@ const styles = {
   navTabActive: {
     backgroundColor: '#0284c7',
     color: '#ffffff',
-    border: '1px solid #0284c7',
+    border: '1px solid #38bdf8',
     padding: '8px 16px',
     borderRadius: '8px',
     cursor: 'pointer',
@@ -222,9 +227,9 @@ const styles = {
     color: '#ffffff',
     padding: '8px 16px',
     borderRadius: '8px',
-    fontWeight: '600',
+    fontWeight: '700',
     fontSize: '13px',
-    border: '1px solid #334155',
+    border: '1px solid #0284c7',
   },
   cartCount: {
     backgroundColor: '#10b981',
@@ -235,58 +240,73 @@ const styles = {
     fontWeight: 'bold',
   },
   hero: {
-    background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 40%, #0f172a 100%)',
+    width: '100%',
+    background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 50%, #0f172a 100%)',
     color: '#ffffff',
-    padding: '50px 40px',
+    padding: '50px 20px',
     textAlign: 'center',
-    boxShadow: 'inset 0 -10px 20px rgba(0,0,0,0.1)',
+    borderBottom: '1px solid #1e293b',
+    boxSizing: 'border-box',
   },
   heroContent: { maxWidth: '900px', margin: '0 auto' },
   heroTag: {
-    backgroundColor: 'rgba(255,255,255,0.15)',
+    backgroundColor: 'rgba(255,255,255,0.2)',
     color: '#38bdf8',
-    padding: '6px 14px',
+    border: '1px solid rgba(56, 189, 248, 0.4)',
+    padding: '6px 16px',
     borderRadius: '20px',
     fontSize: '13px',
     fontWeight: '700',
     display: 'inline-block',
-    marginBottom: '14px',
+    marginBottom: '16px',
   },
-  heroTitle: { fontSize: '32px', fontWeight: '800', margin: '0 0 10px 0' },
-  heroSub: { fontSize: '16px', color: '#e0f2fe', margin: 0, opacity: 0.9 },
-  mainFullWidth: {
-    width: '94%',
-    maxWidth: '1600px',
-    margin: '35px auto 0 auto',
+  heroTitle: {
+    fontSize: '32px',
+    fontWeight: '900',
+    color: '#ffffff',
+    margin: '0 0 12px 0',
+    lineHeight: '1.25',
+  },
+  heroSub: {
+    fontSize: '15px',
+    color: '#e0f2fe',
+    margin: 0,
+    lineHeight: '1.6',
+  },
+  mainContainer: {
+    width: '100%',
+    padding: '32px 32px',
+    boxSizing: 'border-box',
   },
   alert: {
-    backgroundColor: '#dcfce7',
-    color: '#15803d',
-    border: '1px solid #86efac',
+    backgroundColor: '#064e3b',
+    color: '#6ee7b7',
+    border: '1px solid #10b981',
     padding: '14px 20px',
     borderRadius: '10px',
-    marginBottom: '24px',
+    marginBottom: '28px',
     fontWeight: '600',
   },
-  sectionHeader: { marginBottom: '20px' },
-  sectionTitle: { color: '#0f172a', fontSize: '22px', fontWeight: '800', margin: '0 0 4px 0' },
-  sectionSubtitle: { color: '#64748b', fontSize: '14px', margin: 0 },
-  loadingBox: { textAlign: 'center', padding: '40px 0' },
-  loadingText: { color: '#64748b', fontWeight: '500' },
+  sectionHeader: { marginBottom: '24px' },
+  sectionTitle: { color: '#f8fafc', fontSize: '22px', fontWeight: '800', margin: '0 0 6px 0' },
+  sectionSubtitle: { color: '#94a3b8', fontSize: '14px', margin: 0 },
+  loadingBox: { textAlign: 'center', padding: '60px 0' },
+  loadingText: { color: '#94a3b8', fontWeight: '500' },
   fullGrid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(290px, 1fr))',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
     gap: '24px',
+    width: '100%',
   },
   card: {
-    backgroundColor: '#ffffff',
+    backgroundColor: '#1e293b',
     borderRadius: '16px',
     overflow: 'hidden',
-    boxShadow: '0 10px 25px rgba(0,0,0,0.06)',
+    boxShadow: '0 10px 25px rgba(0,0,0,0.3)',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
-    border: '1px solid #cbd5e1',
+    border: '1px solid #334155',
   },
   imageContainer: { height: '200px', overflow: 'hidden', position: 'relative' },
   image: { width: '100%', height: '100%', objectFit: 'cover' },
@@ -294,27 +314,28 @@ const styles = {
     position: 'absolute',
     top: '12px',
     right: '12px',
-    backgroundColor: 'rgba(15, 23, 42, 0.8)',
+    backgroundColor: 'rgba(15, 23, 42, 0.85)',
     color: '#38bdf8',
+    border: '1px solid rgba(56, 189, 248, 0.3)',
     fontSize: '11px',
     fontWeight: '700',
     padding: '4px 10px',
     borderRadius: '12px',
   },
   cardBody: { padding: '20px', display: 'flex', flexDirection: 'column', flexGrow: 1 },
-  productName: { margin: '0 0 8px 0', fontSize: '18px', fontWeight: '700', color: '#0f172a' },
-  productDesc: { fontSize: '13px', color: '#64748b', margin: '0 0 16px 0', flexGrow: 1, lineHeight: '1.4' },
+  productName: { margin: '0 0 8px 0', fontSize: '18px', fontWeight: '800', color: '#f8fafc' },
+  productDesc: { fontSize: '13px', color: '#94a3b8', margin: '0 0 16px 0', flexGrow: 1, lineHeight: '1.5' },
   priceRow: {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'flex-end',
     marginBottom: '16px',
     paddingTop: '12px',
-    borderTop: '1px solid #f1f5f9',
+    borderTop: '1px solid #334155',
   },
-  priceLabel: { fontSize: '11px', color: '#94a3b8', textTransform: 'uppercase', fontWeight: '700' },
-  price: { fontSize: '18px', fontWeight: '800', color: '#0284c7' },
-  stock: { fontSize: '12px', color: '#10b981', fontWeight: '600' },
+  priceLabel: { fontSize: '11px', color: '#64748b', textTransform: 'uppercase', fontWeight: '700' },
+  price: { fontSize: '18px', fontWeight: '800', color: '#38bdf8' },
+  stock: { fontSize: '12px', color: '#34d399', fontWeight: '600' },
   addButton: {
     backgroundColor: '#0284c7',
     color: '#ffffff',
@@ -325,7 +346,6 @@ const styles = {
     fontSize: '14px',
     cursor: 'pointer',
     width: '100%',
-    boxShadow: '0 4px 12px rgba(2, 132, 199, 0.25)',
   },
 };
 
