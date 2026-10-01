@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import DeliveryMap from './DeliveryMap';
 
 function App() {
   const [products, setProducts] = useState([]);
@@ -46,7 +47,7 @@ function App() {
         <p>Order healthcare products from verified pharmacies with M-Pesa & Card payment options.</p>
       </section>
 
-      {/* Product Grid */}
+      {/* Product Grid & Delivery Map */}
       <main style={styles.main}>
         <h3 style={styles.sectionTitle}>Featured Medicines & Supplies</h3>
 
@@ -78,6 +79,9 @@ function App() {
             ))}
           </div>
         )}
+
+        {/* Live Delivery Map */}
+        <DeliveryMap />
       </main>
     </div>
   );
@@ -222,4 +226,4 @@ const styles = {
   },
 };
 
-export default App;  
+export default App; 
