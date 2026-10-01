@@ -1,28 +1,34 @@
 import { useEffect, useState } from 'react';
 import DeliveryMap from './DeliveryMap';
+import CheckoutModal from './CheckoutModal';
 
 function App() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [cartCount, setCartCount] = useState(0);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [successNotice, setSuccessNotice] = useState('');
 
   useEffect(() => {
     fetch('http://localhost/pharma-api/get_products.php')
-      .then((response) => response.json())
+      .then((res) => res.json())
       .then((data) => {
         if (data.status === 'success') {
           setProducts(data.data);
         }
         setLoading(false);
       })
-      .catch((error) => {
-        console.error('Error fetching data:', error);
+      .catch((err) => {
+        console.error('Error fetching data:', err);
         setLoading(false);
       });
   }, []);
 
-  const addToCart = () => {
+  const handleOrderSuccess = (orderId, productName) => {
     setCartCount((prev) => prev + 1);
+    setSelectedProduct(null);
+    setSuccessNotice(`Order #${orderId} for "${productName}" placed successfully!`);
+    setTimeout(() => setSuccessNotice(''), 6000);
   };
 
   return (
@@ -37,7 +43,7 @@ function App() {
           </div>
         </div>
         <div style={styles.cartBadge}>
-          🛒 Cart <span style={styles.cartCount}>{cartCount}</span>
+          🛒 Orders <span style={styles.cartCount}>{cartCount}</span>
         </div>
       </header>
 
@@ -47,8 +53,14 @@ function App() {
         <p>Order healthcare products from verified pharmacies with M-Pesa & Card payment options.</p>
       </section>
 
-      {/* Product Grid & Delivery Map */}
+      {/* Main Content */}
       <main style={styles.main}>
+        {successNotice && (
+          <div style={styles.alert}>
+            ✅ {successNotice}
+          </div>
+        )}
+
         <h3 style={styles.sectionTitle}>Featured Medicines & Supplies</h3>
 
         {loading ? (
@@ -58,10 +70,10 @@ function App() {
             {products.map((item) => (
               <div key={item.id} style={styles.card}>
                 <div style={styles.imageContainer}>
-                  <img 
-                    src={item.image_url || 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500'} 
-                    alt={item.name} 
-                    style={styles.image} 
+                  <img
+                    src={item.image_url || 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500'}
+                    alt={item.name}
+                    style={styles.image}
                   />
                 </div>
                 <div style={styles.cardBody}>
@@ -71,7 +83,10 @@ function App() {
                     <span style={styles.price}>KES {Number(item.price).toLocaleString()}</span>
                     <span style={styles.stock}>In Stock ({item.stock_quantity})</span>
                   </div>
-                  <button onClick={addToCart} style={styles.addButton}>
+                  <button
+                    onClick={() => setSelectedProduct(item)}
+                    style={styles.addButton}
+                  >
                     Add to Order
                   </button>
                 </div>
@@ -83,11 +98,19 @@ function App() {
         {/* Live Delivery Map */}
         <DeliveryMap />
       </main>
+
+      {/* Checkout Modal */}
+      {selectedProduct && (
+        <CheckoutModal
+          product={selectedProduct}
+          onClose={() => setSelectedProduct(null)}
+          onSuccess={handleOrderSuccess}
+        />
+      )}
     </div>
   );
 }
 
-// Inline Styles Object for Clean Visual Presentation
 const styles = {
   container: {
     fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
@@ -105,24 +128,10 @@ const styles = {
     color: '#ffffff',
     boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
   },
-  navBrand: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '12px',
-  },
-  logoIcon: {
-    fontSize: '32px',
-  },
-  brandTitle: {
-    margin: 0,
-    fontSize: '22px',
-    fontWeight: '700',
-  },
-  brandSubtitle: {
-    margin: 0,
-    fontSize: '12px',
-    opacity: 0.85,
-  },
+  navBrand: { display: 'flex', alignItems: 'center', gap: '12px' },
+  logoIcon: { fontSize: '32px' },
+  brandTitle: { margin: 0, fontSize: '22px', fontWeight: '700' },
+  brandSubtitle: { margin: 0, fontSize: '12px', opacity: 0.85 },
   cartBadge: {
     backgroundColor: '#ffffff',
     color: '#0284c7',
@@ -150,15 +159,17 @@ const styles = {
     margin: '30px auto',
     padding: '0 20px',
   },
-  sectionTitle: {
-    color: '#1e293b',
-    fontSize: '20px',
+  alert: {
+    backgroundColor: '#dcfce7',
+    color: '#15803d',
+    border: '1px solid #86efac',
+    padding: '12px 20px',
+    borderRadius: '8px',
     marginBottom: '20px',
+    fontWeight: 'bold',
   },
-  loadingText: {
-    textAlign: 'center',
-    color: '#64748b',
-  },
+  sectionTitle: { color: '#1e293b', fontSize: '20px', marginBottom: '20px' },
+  loadingText: { textAlign: 'center', color: '#64748b' },
   grid: {
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
@@ -173,26 +184,15 @@ const styles = {
     flexDirection: 'column',
     justifyContent: 'space-between',
   },
-  imageContainer: {
-    height: '180px',
-    overflow: 'hidden',
-  },
-  image: {
-    width: '100%',
-    height: '100%',
-    objectFit: 'cover',
-  },
+  imageContainer: { height: '180px', overflow: 'hidden' },
+  image: { width: '100%', height: '100%', objectFit: 'cover' },
   cardBody: {
     padding: '16px',
     display: 'flex',
     flexDirection: 'column',
     flexGrow: 1,
   },
-  productName: {
-    margin: '0 0 8px 0',
-    fontSize: '16px',
-    color: '#0f172a',
-  },
+  productName: { margin: '0 0 8px 0', fontSize: '16px', color: '#0f172a' },
   productDesc: {
     fontSize: '13px',
     color: '#64748b',
@@ -205,15 +205,8 @@ const styles = {
     alignItems: 'center',
     marginBottom: '12px',
   },
-  price: {
-    fontSize: '16px',
-    fontWeight: 'bold',
-    color: '#0284c7',
-  },
-  stock: {
-    fontSize: '12px',
-    color: '#16a34a',
-  },
+  price: { fontSize: '16px', fontWeight: 'bold', color: '#0284c7' },
+  stock: { fontSize: '12px', color: '#16a34a' },
   addButton: {
     backgroundColor: '#0284c7',
     color: '#ffffff',
