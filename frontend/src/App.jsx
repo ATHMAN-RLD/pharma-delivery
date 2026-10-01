@@ -1,122 +1,225 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import { useEffect, useState } from 'react';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [cartCount, setCartCount] = useState(0);
+
+  useEffect(() => {
+    fetch('http://localhost/pharma-api/get_products.php')
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.status === 'success') {
+          setProducts(data.data);
+        }
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+        setLoading(false);
+      });
+  }, []);
+
+  const addToCart = () => {
+    setCartCount((prev) => prev + 1);
+  };
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
+    <div style={styles.container}>
+      {/* Header / Navbar */}
+      <header style={styles.navbar}>
+        <div style={styles.navBrand}>
+          <span style={styles.logoIcon}>💊</span>
+          <div>
+            <h1 style={styles.brandTitle}>PharmaExpress</h1>
+            <p style={styles.brandSubtitle}>Mombasa Healthcare Delivery</p>
+          </div>
         </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
+        <div style={styles.cartBadge}>
+          🛒 Cart <span style={styles.cartCount}>{cartCount}</span>
         </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
+      </header>
+
+      {/* Hero Section */}
+      <section style={styles.hero}>
+        <h2>Fast Prescription & Medical Delivery in Mombasa</h2>
+        <p>Order healthcare products from verified pharmacies with M-Pesa & Card payment options.</p>
       </section>
 
-      <div className="ticks"></div>
+      {/* Product Grid */}
+      <main style={styles.main}>
+        <h3 style={styles.sectionTitle}>Featured Medicines & Supplies</h3>
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+        {loading ? (
+          <p style={styles.loadingText}>Loading products...</p>
+        ) : (
+          <div style={styles.grid}>
+            {products.map((item) => (
+              <div key={item.id} style={styles.card}>
+                <div style={styles.imageContainer}>
+                  <img 
+                    src={item.image_url || 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500'} 
+                    alt={item.name} 
+                    style={styles.image} 
+                  />
+                </div>
+                <div style={styles.cardBody}>
+                  <h4 style={styles.productName}>{item.name}</h4>
+                  <p style={styles.productDesc}>{item.description}</p>
+                  <div style={styles.priceRow}>
+                    <span style={styles.price}>KES {Number(item.price).toLocaleString()}</span>
+                    <span style={styles.stock}>In Stock ({item.stock_quantity})</span>
+                  </div>
+                  <button onClick={addToCart} style={styles.addButton}>
+                    Add to Order
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </main>
+    </div>
+  );
 }
 
-export default App
+// Inline Styles Object for Clean Visual Presentation
+const styles = {
+  container: {
+    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+    backgroundColor: '#f4f7f6',
+    minHeight: '100vh',
+    margin: 0,
+    paddingBottom: '40px',
+  },
+  navbar: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: '15px 40px',
+    backgroundColor: '#0284c7',
+    color: '#ffffff',
+    boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+  },
+  navBrand: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '12px',
+  },
+  logoIcon: {
+    fontSize: '32px',
+  },
+  brandTitle: {
+    margin: 0,
+    fontSize: '22px',
+    fontWeight: '700',
+  },
+  brandSubtitle: {
+    margin: 0,
+    fontSize: '12px',
+    opacity: 0.85,
+  },
+  cartBadge: {
+    backgroundColor: '#ffffff',
+    color: '#0284c7',
+    padding: '8px 16px',
+    borderRadius: '20px',
+    fontWeight: 'bold',
+    fontSize: '14px',
+  },
+  cartCount: {
+    backgroundColor: '#ef4444',
+    color: '#fff',
+    borderRadius: '50%',
+    padding: '2px 8px',
+    marginLeft: '6px',
+    fontSize: '12px',
+  },
+  hero: {
+    backgroundColor: '#0ea5e9',
+    color: '#ffffff',
+    textAlign: 'center',
+    padding: '40px 20px',
+  },
+  main: {
+    maxWidth: '1100px',
+    margin: '30px auto',
+    padding: '0 20px',
+  },
+  sectionTitle: {
+    color: '#1e293b',
+    fontSize: '20px',
+    marginBottom: '20px',
+  },
+  loadingText: {
+    textAlign: 'center',
+    color: '#64748b',
+  },
+  grid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+    gap: '24px',
+  },
+  card: {
+    backgroundColor: '#ffffff',
+    borderRadius: '12px',
+    overflow: 'hidden',
+    boxShadow: '0 4px 15px rgba(0,0,0,0.05)',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+  },
+  imageContainer: {
+    height: '180px',
+    overflow: 'hidden',
+  },
+  image: {
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
+  },
+  cardBody: {
+    padding: '16px',
+    display: 'flex',
+    flexDirection: 'column',
+    flexGrow: 1,
+  },
+  productName: {
+    margin: '0 0 8px 0',
+    fontSize: '16px',
+    color: '#0f172a',
+  },
+  productDesc: {
+    fontSize: '13px',
+    color: '#64748b',
+    margin: '0 0 12px 0',
+    flexGrow: 1,
+  },
+  priceRow: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: '12px',
+  },
+  price: {
+    fontSize: '16px',
+    fontWeight: 'bold',
+    color: '#0284c7',
+  },
+  stock: {
+    fontSize: '12px',
+    color: '#16a34a',
+  },
+  addButton: {
+    backgroundColor: '#0284c7',
+    color: '#ffffff',
+    border: 'none',
+    padding: '10px',
+    borderRadius: '6px',
+    fontWeight: 'bold',
+    cursor: 'pointer',
+    width: '100%',
+  },
+};
+
+export default App;  
