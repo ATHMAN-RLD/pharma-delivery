@@ -1,23 +1,31 @@
 <?php
-$host = 'localhost';
-$db   = 'pharma_db';
-$user = 'root';
-$pass = ''; // Default XAMPP MySQL password is empty
-$charset = 'utf8mb4';
+class Database {
+    private $host = "localhost";
+    private $db_name = "pharma_db";
+    private $username = "root";
+    private $password = "";
+    public $conn;
 
-$dsn = "mysql:host=$host;dbname=$db;charset=$charset";
+    public function getConnection() {
+        $this->conn = null;
 
-$options = [
-    PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
-    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-    PDO::ATTR_EMULATE_PREPARES   => false,
-];
+        try {
+            $this->conn = new PDO(
+                "mysql:host=" . $this->host . ";dbname=" . $this->db_name,
+                $this->username,
+                $this->password
+            );
+            $this->conn->exec("set names utf8");
+            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        } catch(PDOException $exception) {
+            echo json_encode([
+                "status" => "error", 
+                "message" => "Database connection error: " . $exception->getMessage()
+            ]);
+            exit();
+        }
 
-try {
-     $pdo = new PDO($dsn, $user, $pass, $options);
-     // Uncomment line below to test connection:
-     // echo "Database connected successfully!";
-} catch (\PDOException $e) {
-     throw new \PDOException($e->getMessage(), (int)$e->getCode());
+        return $this->conn;
+    }
 }
-?>  
+?> 
