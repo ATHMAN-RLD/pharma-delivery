@@ -38,13 +38,13 @@ PharmaExpress is a decoupled full-stack web application architected for real-tim
 
 1\. \*\*Order Initiation:\*\* The user selects items in the React storefront, inputs their delivery details and phone number, and triggers checkout via `CheckoutModal.jsx`.
 
-2\. \*\*STK Push Generation:\*\* The backend (`mpesa\_stk.php`) requests an OAuth access token from Safaricom and dispatches an STK Push API request to the customer's phone.
+2\. \*\*STK Push Generation:\*\* The backend (`mpesa\\\_stk.php`) requests an OAuth access token from Safaricom and dispatches an STK Push API request to the customer's phone.
 
 3\. \*\*User Authorization:\*\* The customer enters their PIN on their mobile device to authorize the sandbox transaction.
 
 4\. \*\*Asynchronous Callback:\*\* Upon completion, Safaricom's servers send an HTTP POST request containing the transaction metadata (`ResultCode`, `CheckoutRequestID`, receipt numbers) to your public webhook URL.
 
-5\. \*\*Webhook Logging \& Processing:\*\* The server logs raw payloads to `mpesa\_callbacks.log` and executes a database update query to reconcile the order state.
+5\. \*\*Webhook Logging \& Processing:\*\* The server logs raw payloads to `mpesa\\\_callbacks.log` and executes a database update query to reconcile the order state.
 
 
 
@@ -59,4 +59,52 @@ PharmaExpress is a decoupled full-stack web application architected for real-tim
 \* \*\*Version Control Protection:\*\* Sensitive environment files are ignored via `.gitignore` to prevent public credential exposure on GitHub.
 
 \* \*\*Database Abstraction:\*\* Database queries utilize PDO (PHP Data Objects) with prepared statements to mitigate SQL injection vulnerabilities.
+
+
+
+
+
+
+
++---------------------------------------------------------------------------------------------------+
+
+|                                      CLIENT SIDE (FRONTEND)                                       |
+
+|  \[ React.js Single Page App ]  --->  (Triggers AJAX / Fetch Requests \& Auto-Polls every 10s)      |
+
++---------------------------------------------------------------------------------------------------+
+
+&#x20;                                                 |
+
+&#x20;                                                 v (HTTP REST API / JSON)
+
++---------------------------------------------------------------------------------------------------+
+
+|                                      SERVER SIDE (BACKEND)                                        |
+
+|  \[ XAMPP Local Environment (Apache + PHP 8.x) ]                                                   |
+
+|    ├── db.php             (PDO Database Abstraction \& Secure Connection)                         |
+
+|    ├── create\_order.php   (Order Insertion \& Validation Logic)                                   |
+
+|    ├── mpesa\_stk.php      (Safaricom Daraja API STK Push Integration)                            |
+
+|    └── mpesa\_callback.php (Secure Webhook Listener for Transaction Status Updates)               |
+
++---------------------------------------------------------------------------------------------------+
+
+&#x20;                                                 |                                 ^
+
+&#x20;                       (HTTP POST / STK Push)    |                                 | (Webhook Callback)
+
+&#x20;                                                 v                                 |
+
++---------------------------------------------------------------------------------------------------+                                                 |
+
+|                        EXTERNAL SYSTEMS \& SERVICES                                                |
+
+|  \[ Safaricom M-Pesa Daraja API (Sandbox Gateway) ] <----------------------------------------------+
+
++---------------------------------------------------------------------------------------------------+
 
