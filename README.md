@@ -1,1 +1,29 @@
-#  PharmaExpress - Real-Time Pharmaceutical Ordering & M-Pesa Payment Platform`n`nA full-stack web application designed for rapid pharmaceutical ordering and delivery logistics, featuring live order tracking and secure M-Pesa STK Push payment integration.`n`n---`n`n## Features`n`n* **Interactive Storefront:** Browse medical products, view live pricing, and manage a dynamic shopping cart.`n* **M-Pesa Daraja API Integration:** Secure STK Push payment triggering for mobile money checkout.`n* **Live Order Dashboard:** Real-time monitoring of incoming orders with automated status updates (Pending/Completed).`n* **Secure Webhook Handling:** PHP backend callbacks configured via Ngrok for testing transaction lifecycles.`n* **Environment Security:** Strict configuration isolation using `.env` files and `.gitignore` protocols.`n`n---`n`n## 🛠️ Technology Stack`n`n* **Frontend:** React (Vite), JavaScript, CSS3`n* **Backend:** PHP (Native REST endpoints, PDO database abstraction)`n* **Database:** MySQL / XAMPP Local Server`n* **Payment Gateway:** Safaricom Daraja Sandbox API (STK Push & Callbacks)`n* **Networking:** Ngrok (Public Tunneling for Webhooks)`n* **Version Control:** Git & GitHub`n`n---`n`n##  Author`nBuilt by [ATHMAN-RLD](https://github.com/ATHMAN-RLD) as a portfolio-grade full-stack engineering project.
+# PharmaExpress - Real-Time Pharmaceutical Ordering & M-Pesa Payment Platform
+
+A full-stack web application designed for rapid pharmaceutical ordering and delivery logistics, featuring live order tracking and secure M-Pesa STK Push payment integration.
+
+---
+
+## Features
+
+* **Interactive Storefront:** Browse medical products, view live pricing, and manage a dynamic shopping cart.
+* **M-Pesa Daraja API Integration:** Secure STK Push payment triggering for mobile money checkout.
+* **Live Order Dashboard:** Real-time monitoring of incoming orders with automated status updates (Pending/Completed).
+* **Secure Webhook Handling:** PHP backend callbacks configured via Ngrok for testing transaction lifecycles.
+* **Environment Security:** Strict configuration isolation using `.env` files and `.gitignore` protocols.
+
+---
+
+## Technology Stack
+
+* **Frontend:** React (Vite), JavaScript, CSS3
+* **Backend:** PHP (Native REST endpoints, PDO database abstraction)
+* **Database:** MySQL / XAMPP Local Server
+* **Payment Gateway:** Safaricom Daraja Sandbox API (STK Push & Callbacks)
+* **Networking:** Ngrok (Public Tunneling for Webhooks)
+* **Version Control:** Git & GitHub
+
+---
+
+## Author
+Built by [ATHMAN-RLD](https://github.com/ATHMAN-RLD) as a portfolio-grade full-stack engineering project.
